@@ -1,0 +1,275 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><style>
+:root{--bg:#08090a;--fg:#e8eaed;--dim:#9aa3ad;--line:#23262a;--accent:#7c5cff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.65 "Public Sans",-apple-system,"Segoe UI",system-ui,sans-serif;padding:56px 64px}
+h1{font-size:36px;line-height:1.15;letter-spacing:-.02em;margin:0 0 8px}
+h2{font-size:22px;margin:44px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+h3{font-size:17px;margin:26px 0 8px;color:#c9d1d9}
+p,li{color:#cbd2d9} strong{color:#fff}
+code{font:13px ui-monospace,Consolas,monospace;background:#141619;border:1px solid var(--line);padding:1px 5px;border-radius:4px;color:#d6bcff}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px}
+th{text-align:left;font-weight:600;color:#fff;background:#111316;border-bottom:1px solid #2e3238;padding:9px 10px}
+td{border-bottom:1px solid #1b1e22;padding:8px 10px;vertical-align:top;color:#c3cad2}
+a{color:#9d86ff;text-decoration:none}
+ul,ol{padding-left:22px}
+pre.matrix{background:#0d0f12;border:1px solid var(--line);border-radius:8px;padding:16px 18px;overflow-x:auto;font:11.5px/1.7 ui-monospace,Consolas,monospace;color:#b8c0c9;white-space:pre}
+</style></head><body><div style="font:12px/1.4 system-ui;letter-spacing:.08em;text-transform:uppercase;color:#7c5cff;padding-bottom:22px;border-bottom:1px solid #23262a;margin-bottom:28px">Dori research · 2026-10-22</div><h1 id="icon-language-for-the-digital-twin-scada-editor-fork-of-pascalorgeditor"><a href="#icon-language-for-the-digital-twin-scada-editor-fork-of-pascalorgeditor">Icon language for the digital-twin SCADA editor (fork of pascalorg/editor)</a></h1>
+<p>Research date: 2026-10-22. Scope: <strong>SCADA industrial-automation platform first, 3D scene viewer second</strong> (owner correction applied). Every number below was read from a live source on that date; anything not verified is marked <strong>UNVERIFIED</strong> and listed in §10.</p>
+<h2 id="0-verdict"><a href="#0-verdict">0. Verdict</a></h2>
+<table>
+<thead>
+<tr><th>Role</th><th>Set</th><th>Why this one</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Primary</strong></td><td><strong>Lucide</strong> — <code>lucide-react</code> 1.61.0, ISC</td><td>Already the fork's dependency (113 files), 24 px grid / 2 px stroke, 1,978 glyphs, per-icon ESM with <code>sideEffects: false</code>, and it answers 56 of the 57 SCADA utility probes in §3 (alarm, trend, history, tag, device tree, gauge, thermometer, factory).</td></tr>
+<tr><td><strong>Secondary</strong></td><td><strong>Tabler Icons</strong> — <code>@tabler/icons-react</code> 3.49.0, MIT</td><td>Only mainstream free set with the 3D operator vocabulary Lucide lacks at <em>identical</em> geometry (24 px canvas, 2 px stroke, round caps): <code>gizmo</code>, <code>layers-union</code>, <code>layers-subtract</code>, <code>layers-intersect</code>, <code>layers-difference</code>, <code>3d-cube-sphere</code>, <code>rotate-3d</code>, <code>perspective</code>. Imported per icon, only where named.</td></tr>
+<tr><td><strong>Custom SVG</strong></td><td>20 glyphs</td><td>P&amp;ID equipment symbols (valve, pump, motor, tank, sensor, transmitters), alarm severity, tag binding, trend interval, and the 3D gizmo/extrude/UV/wireframe/selection set. No library ships these; §7 lists each with its reason.</td></tr>
+</tbody>
+</table>
+<p>Do <strong>not</strong> use an icon font, do not import a whole set, and do not add a third family. Two libraries + one hand-drawn sheet is the whole system.</p>
+<h2 id="1-method-and-evidence"><a href="#1-method-and-evidence">1. Method and evidence</a></h2>
+<ul>
+<li>Versions and licences: <code>https://registry.npmjs.org/&lt;package&gt;/latest</code>, read 2026-10-22 (§2 table).</li>
+<li>Glyph counts and icon-name lists: the Iconify datasets served per set as <code>https://cdn.jsdelivr.net/npm/@iconify-json/&lt;prefix&gt;@latest/icons.json</code> (the <code>api.iconify.design</code> endpoint returned HTTP 429 during this pass; the npm data is the same dataset).</li>
+<li>Repo audit: <code>pascalorg/editor</code> tarball at commit <code>b1a29ed676b34a5df6db3f94f9036b2c62c51406</code>, unpacked read-only into a temp directory and scanned locally (§5).</li>
+<li>Coverage: exact icon names were probed against each set's name array, then hand-audited to remove keyword false positives (e.g. Lucide <code>face-grinning</code>, Tabler <code>uv-index</code>, Phosphor's <code>*-light</code> weight suffixes). Probe keywords are in the appendix so the matrix can be re-run.</li>
+<li>Standards: W3C, Apple, Material, Carbon, Lucide, Tabler and Radix pages, quoted in §8.</li>
+</ul>
+<h2 id="2-icon-set-inventory-15-free-sets-commercial-shipping-allowed-unless-noted"><a href="#2-icon-set-inventory-15-free-sets-commercial-shipping-allowed-unless-noted">2. Icon set inventory (15 free sets, commercial shipping allowed unless noted)</a></h2>
+<p>Coverage is scored only in §3 (SCADA) and §4 (3D), where every cell is hand-audited; this table stays numeric only where the number is unambiguous (glyphs, version, grid).</p>
+<table>
+<thead>
+<tr><th>Set</th><th>Licence + commercial shipping</th><th>npm / React package (latest, 2026-10-22)</th><th>Glyphs</th><th>Style</th><th>Grid / stroke</th><th>Tree-shaking</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Lucide</strong></td><td>ISC — yes, no attribution</td><td><code>lucide-react</code> <strong>1.61.0</strong></td><td><strong>1,978</strong></td><td>outline (stroke)</td><td><strong>24 px / 2 px</strong></td><td><code>sideEffects:false</code>, <code>module:true</code>, per-icon named exports</td></tr>
+<tr><td><strong>Tabler</strong></td><td>MIT — yes</td><td><code>@tabler/icons-react</code> <strong>3.49.0</strong></td><td><strong>6,286</strong></td><td>outline + <code>-filled</code> pairs</td><td><strong>24 px / 2 px</strong>, round caps</td><td><code>sideEffects:false</code>, <code>module:true</code></td></tr>
+<tr><td>Phosphor</td><td>MIT — yes</td><td><code>@phosphor-icons/react</code> <strong>2.1.10</strong></td><td><strong>1,248</strong> icons × <strong>6</strong> weights (9,161 entries)</td><td>outline + fill + duotone, 6 weights</td><td>256-unit grid, designed at 16 px</td><td><code>sideEffects:false</code>, <code>exports</code> map</td></tr>
+<tr><td>Material Symbols</td><td>Apache-2.0 — yes</td><td><code>material-symbols</code> <strong>0.48.1</strong> / <code>@material-symbols/svg-400</code> <strong>0.48.1</strong></td><td><strong>16,442</strong></td><td>filled-outline, 3 styles + variable axes</td><td><strong>24 dp</strong>, FILL/wght/GRAD/opsz</td><td><strong>No</strong> with the font (one 7.9 MB variable font, https://developers.google.com/fonts/docs/material_symbols); yes with per-icon <code>svg-400</code> files</td></tr>
+<tr><td>Hugeicons</td><td>MIT — yes</td><td><code>@hugeicons/react</code> <strong>1.1.10</strong></td><td><strong>6,091</strong></td><td>stroke / duotone / solid</td><td>24 px</td><td><code>sideEffects:false</code>, <code>exports</code> map</td></tr>
+<tr><td>Carbon</td><td>Apache-2.0 — yes</td><td><code>@carbon/icons-react</code> <strong>11.91.0</strong></td><td><strong>2,776</strong></td><td>outline + filled</td><td>16/20/24/32 artboards</td><td><code>sideEffects:false</code>, <code>module:true</code></td></tr>
+<tr><td>Iconoir</td><td>MIT — yes</td><td><code>iconoir-react</code> <strong>7.12.1</strong></td><td><strong>1,682</strong></td><td>outline + solid</td><td><strong>24 px / 1.5 px</strong></td><td><code>sideEffects:false</code>, <code>exports</code> map</td></tr>
+<tr><td>Remix Icon</td><td>Apache-2.0 — yes</td><td><code>remixicon</code> <strong>4.9.1</strong></td><td><strong>3,229</strong></td><td>line + fill pairs</td><td>24 px</td><td>No — font/CSS package</td></tr>
+<tr><td>Radix Icons</td><td>MIT — yes</td><td><code>@radix-ui/react-icons</code> <strong>1.3.2</strong></td><td><strong>342</strong></td><td>outline</td><td><strong>15 px</strong></td><td><code>sideEffects:false</code>, <code>module:true</code></td></tr>
+<tr><td>Heroicons</td><td>MIT — yes</td><td><code>@heroicons/react</code> <strong>2.2.0</strong></td><td><strong>1,288</strong></td><td>outline + solid</td><td>24 px outline / 20 / 16 solid</td><td><code>sideEffects:false</code>, <code>exports</code> map</td></tr>
+<tr><td>Solar</td><td>CC-BY-4.0 — yes <strong>with attribution</strong></td><td><code>@iconify-json/solar</code> <strong>1.2.13</strong></td><td><strong>8,859</strong></td><td>bold / linear / outline / duotone</td><td>24 px</td><td>Iconify JSON, per-icon at build</td></tr>
+<tr><td>MingCute</td><td>Apache-2.0 — yes</td><td><code>@iconify-json/mingcute</code> <strong>1.2.8</strong></td><td><strong>3,336</strong></td><td>line + fill</td><td>24 px</td><td>Iconify JSON</td></tr>
+<tr><td>Boxicons</td><td>CC-BY-4.0 OR OFL-1.1 OR MIT — yes</td><td><code>boxicons</code> <strong>2.1.4</strong></td><td><strong>1,609</strong></td><td>regular + solid</td><td>24 px</td><td>No — font/CSS package</td></tr>
+<tr><td>Fluent UI System Icons</td><td>MIT — yes</td><td><code>@fluentui/react-icons</code> <strong>2.0.344</strong></td><td><strong>20,289</strong></td><td>regular + filled</td><td>20 px</td><td><code>sideEffects</code> limited to CSS, <code>exports</code> map</td></tr>
+<tr><td>Font Awesome Free</td><td>Icons CC-BY-4.0, font MIT — yes <strong>with attribution</strong></td><td><code>@fortawesome/free-solid-svg-icons</code> <strong>7.3.1</strong></td><td><strong>1,407</strong></td><td>solid (filled)</td><td>512-unit grid</td><td><code>sideEffects:false</code>, <code>exports</code> map</td></tr>
+</tbody>
+</table>
+<p>Set notes:</p>
+<ul>
+<li><strong>Lucide</strong> — the geometry the fork already ships: <code>viewBox=&quot;0 0 24 24&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot;</code>, verified in <code>lucide-static</code> 1.61.0 <code>icons/move-3d.svg</code>. ISC means no attribution obligation in the product.</li>
+<li><strong>Tabler</strong> — verified <code>stroke-width=&quot;2&quot;</code> on a 24 canvas (<code>@tabler/icons</code> <code>icons/outline/gizmo.svg</code>). Ships <code>-filled</code> variants, which is how an active state can be expressed without a second family.</li>
+<li><strong>Phosphor</strong> — 6 weights on one 256-unit grid; its README states &quot;1,248 icons and counting&quot;, &quot;6 weights&quot;, &quot;Designed at 16 x 16px&quot; (https://github.com/phosphor-icons/homepage). The 9,161 count is the weight-expanded dataset.</li>
+<li><strong>Material Symbols</strong> — the only free family with equipment glyphs (<code>valve</code>, <code>water-pump</code>, <code>heat-pump</code>, <code>oil-barrel</code>, <code>sensors</code>, <code>gas-meter</code>, <code>electric-meter</code>) but it is a filled-path set whose per-icon SVGs use <code>viewBox=&quot;0 -960 960 960&quot;</code> at 48 px, and the full variable font is 7.9 MB; per-icon SVG (<code>@material-symbols/svg-400</code>, 13.1 MB unpacked) is the only tree-shakeable route.</li>
+<li><strong>Iconoir</strong> — unique 3D vocabulary (<code>extrude</code>, <code>select-edge-3d</code>, <code>box-3d-point</code>) but its SVGs are <code>stroke-width=&quot;1.5&quot;</code> on a 24 canvas (https://cdn.jsdelivr.net/npm/iconoir@latest/icons/regular/extrude.svg), so mixing it with a 2 px set produces a visibly lighter glyph. That one fact is why it is not the secondary.</li>
+<li><strong>Radix Icons</strong> — 15 px grid, 342 glyphs: a UI-decor set, not a product icon system.</li>
+<li><strong>Font Awesome / Solar / Boxicons</strong> — attribution (CC-BY-4.0) is a product-visible obligation; keep them out of a shipped SCADA UI.</li>
+</ul>
+<h2 id="3-industrial-scada-coverage"><a href="#3-industrial-scada-coverage">3. Industrial (SCADA) coverage</a></h2>
+<p>15 industrial concepts probed by literal icon name; <strong>Y</strong> = a real glyph for the concept, <strong>~</strong> = usable analogue only, <strong>–</strong> = nothing.</p>
+<p>| Set | valve | pump | motor | tank | sensor | tag | alarm | severity | trend | history | status | device tree | flow | energy | plant | total |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| <strong>Lucide</strong> | ~ | – | – | ~ | ~ | Y | Y | Y | Y | Y | Y | Y | Y | Y | Y | 12 |
+| <strong>Tabler</strong> | – | – | – | ~ | ~ | Y | Y | Y | Y | Y | Y | Y | Y | Y | Y | 11 |
+| Material Symbols | Y | Y | ~ | Y | Y | Y | Y | Y | Y | Y | Y | Y | Y | Y | Y | 14 |
+| Hugeicons | ~ | ~ | ~ | ~ | ~ | Y | Y | Y | Y | Y | Y | Y | Y | Y | Y | 12 |
+| Carbon | – | ~ | ~ | ~ | ~ | Y | Y | Y | Y | Y | Y | Y | Y | Y | Y | 10 |
+| Iconoir | ~ | – | – | ~ | ~ | Y | Y | Y | Y | Y | Y | Y | Y | Y | Y | 8 |</p>
+<p>What the Y rows actually contain (verified names):</p>
+<ul>
+<li><strong>Lucide (56/57 of a broader SCADA probe)</strong> — <code>bell</code>, <code>bell-ring</code>, <code>triangle-alert</code>, <code>circle-alert</code>, <code>octagon-x</code>, <code>info</code>, <code>shield-alert</code>, <code>activity</code>, <code>chart-line</code>, <code>chart-spline</code>, <code>history</code>, <code>clock</code>, <code>timer</code>, <code>calendar-clock</code>, <code>tag</code>, <code>tags</code>, <code>barcode</code>, <code>gauge</code>, <code>gauge-circle</code>, <code>thermometer</code>, <code>droplet</code>, <code>droplets</code>, <code>waves</code>, <code>wind</code>, <code>flame</code>, <code>snowflake</code>, <code>zap</code>, <code>battery</code>, <code>plug</code>, <code>power</code>, <code>cpu</code>, <code>server</code>, <code>network</code>, <code>database</code>, <code>hard-drive</code>, <code>list-tree</code>, <code>git-branch</code>, <code>workflow</code>, <code>route</code>, <code>cable</code>, <code>antenna</code>, <code>radio</code>, <code>satellite</code>, <code>scan</code>, <code>radar</code>, <code>signal</code>, <code>sliders-horizontal</code>, <code>circle-check</code>, <code>circle-x</code>, <code>factory</code>, <code>warehouse</code>, <code>building-2</code>, <code>container</code>, <code>barrel</code>, <code>faucet</code>, <code>unplug</code>.</li>
+<li><strong>Material Symbols (only set with these)</strong> — <code>valve</code>, <code>water-pump</code>, <code>heat-pump</code>, <code>oil-barrel</code>, <code>sensors</code>, <code>sensors-off</code>, <code>gas-meter</code>, <code>electric-meter</code>, <code>plumbing</code>, <code>thermostat</code>, <code>speed</code>, <code>factory</code>, <code>warehouse</code>, <code>account-tree</code>, <code>schema</code>, <code>device-hub</code>, <code>monitoring</code>, <code>timeline</code>, <code>insights</code>.</li>
+<li><strong>Tabler</strong> — same alarm/trend/history/tree pattern as Lucide plus <code>layers-union</code>/<code>layers-subtract</code>/<code>layers-intersect</code>/<code>layers-difference</code>, <code>gizmo</code>, <code>alert-triangle-filled</code>, <code>circle-check-filled</code>; <strong>no</strong> <code>valve</code>, <code>pump</code>, <code>signal</code>.</li>
+</ul>
+<p><strong>Conclusion.</strong> A SCADA HMI's equipment symbols are a domain language (ISA-5.1-style P&amp;ID), not a UI-icon concern. Lucide's <code>faucet</code>/<code>barrel</code>/<code>container</code>/<code>gauge</code> are analogues, not symbols you would put on a plant mimic next to a real valve. So the equipment set is drawn once, by hand, on the same 24 px grid — §7.</p>
+<h2>4. 3D concept coverage (18 concepts)</h2><pre class="matrix">
+| Set | move | rotate | scale | gizmo | mesh | vertex | edge | face | extrude | boolean | light | camera | material | UV | render | wireframe | orthographic | snapping |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| **Lucide** | Y `move`, `move-3d` | Y `rotate-cw`, `orbit` | Y `scaling` | ~ `axis-3d` | ~ `box`, `boxes` | ~ `circle-dot` | – | – | – | ~ `combine` | Y `lightbulb` | Y `camera` | Y `palette` | – | ~ `play` | – | ~ `axis-3d` | Y `magnet` |
+| **Tabler** | Y `arrows-move` | Y `rotate-3d` | Y `arrows-maximize` | Y `gizmo` | ~ `3d-cube-sphere` | ~ `circle-dot` | ~ `line` | ~ `polygon` | – | **Y** `layers-union`/`-subtract`/`-intersect`/`-difference` | Y `bulb` | Y `camera` | Y `palette` | – | ~ `play` | – | Y `perspective` | Y `magnet` |
+| Material Symbols | Y `open-with` | Y `3d-rotation` | Y `open-in-full` | – | Y `view-in-ar` | ~ `adjust` | – | – | – | ~ `difference` | Y `lightbulb` | Y `videocam` | Y `palette` | – | ~ `movie` | – | ~ `flip` | – |
+| Hugeicons | Y `3d-move` | Y `3d-rotate` | Y `3d-scale` | – | Y `cube` | ~ | ~ | ~ | – | ~ `combine` | Y `bulb` | Y `camera` | Y `brush` | **Y** `uv-01`…`uv-03` | ~ `monitor` | – | Y `perspective` | Y `magnet` |
+| Iconoir | Y `drag` | Y `rotate-camera-left` | Y `scale-frame-enlarge` | – | ~ `cube` | Y `box-3d-point` | Y `select-edge-3d` | ~ | **Y** `extrude` | Y `combine`, `exclude`, `intersect` | Y `lamp` | Y `camera` | Y `palette` | ~ | ~ `play` | – | Y `perspective-view` | Y `magnet` |
+| Phosphor | Y | Y | Y `arrows-out-cardinal` | – | Y `bounding-box` | ~ | ~ | ~ | – | ~ `arrows-merge` | Y `lightbulb` | Y `camera` | Y `paint-brush` | – | ~ `play` | – | Y `perspective` | Y `magnet` |
+
+Reading of the matrix: **no free set has `extrude`, `UV` and `wireframe` together**, and only Iconoir (1.5 px) has `extrude` at all. Tabler is the only 2 px set that supplies the four boolean operators and a `gizmo` glyph. Vertex/edge/face selection is universally absent as a triad. That is the exact shape of the custom sheet in §7.
+
+</pre><h2 id="5-pascal-editor-audit"><a href="#5-pascal-editor-audit">5. Pascal Editor audit</a></h2>
+<p>Repo: <code>pascalorg/editor</code> (https://github.com/pascalorg/editor), default branch <code>main</code>, <strong>25,046 stars</strong>, <strong>MIT</strong>, TypeScript, HEAD <strong><code>b1a29ed676b34a5df6db3f94f9036b2c62c51406</code></strong> (committer date 2026-10-22T10:37:32Z).</p>
+<table>
+<thead>
+<tr><th>Fact</th><th>Value</th><th>Path</th></tr>
+</thead>
+<tbody>
+<tr><td>Icon dependencies</td><td><code>lucide-react ^1.61.0</code>, <code>@iconify/react ^6.0.3</code>, <code>@radix-ui/react-tooltip ^1.4.1</code></td><td><code>apps/editor/package.json</code></td></tr>
+<tr><td>Files importing Lucide</td><td><strong>113</strong></td><td>repo-wide scan of <code>.ts/.tsx</code></td></tr>
+<tr><td>Distinct Lucide glyphs imported</td><td><strong>150</strong></td><td>same scan</td></tr>
+<tr><td>Pictorial (raster) node icons</td><td><strong>101</strong> <code>.webp</code></td><td><code>apps/editor/public/icons/*.webp</code> (e.g. <code>mesh.webp</code>, <code>cube.webp</code>, <code>orbit.webp</code>, <code>pan.webp</code>, <code>measure.webp</code>, <code>paint.webp</code>, <code>floorplan.webp</code>)</td></tr>
+<tr><td>Rendered glyph sizes</td><td><code>h-3.5 w-3.5</code> <strong>14 px × 187</strong>, <code>h-4 w-4</code> <strong>16 px × 176</strong>, <code>h-3 w-3</code> 12 px × 54, <code>size-4</code> 16 px × 26, <code>size-3.5</code> × 23, <code>h-5 w-5</code> 20 px × 10</td><td>Lucide JSX attributes across the repo</td></tr>
+<tr><td>Floating viewport toolbar</td><td>container <code>h-8</code> (32 px), <code>rounded-xl</code>, <code>backdrop-blur-md</code>; buttons <code>w-8</code> (32 px); tooltip opens <code>side=&quot;bottom&quot;</code></td><td><code>apps/editor/components/viewer-toolbar.tsx</code></td></tr>
+<tr><td>Left icon rail</td><td>rail <code>w-11</code> (<strong>44 px</strong>), buttons <code>h-9 w-9</code> (<strong>36 px</strong>) <code>rounded-lg</code>, glyphs <code>h-6 w-6</code> (24 px) or <code>h-5 w-5</code>; divider <code>h-px w-8</code></td><td><code>packages/editor/src/components/ui/sidebar/icon-rail.tsx</code></td></tr>
+<tr><td>Tab bar / vertical tabs</td><td>horizontal bar <code>h-10</code>, text tabs <code>h-7 rounded-md px-3</code>; vertical variant <code>h-11 w-11 rounded-xl</code></td><td><code>packages/editor/src/components/ui/sidebar/tab-bar.tsx</code></td></tr>
+<tr><td>Viewport stage switcher</td><td>pill <code>h-8 rounded-full px-3 text-xs</code>, icons forced to <code>size-3.5</code> (14 px) via <code>[&amp;&gt;svg]:size-3.5</code></td><td><code>packages/editor/src/components/viewer/viewer-stage-switcher.tsx</code></td></tr>
+<tr><td>Viewport controls bar</td><td>dropdown triggers with <code>Eye</code>/<code>SlidersHorizontal</code> at <code>h-5 w-5</code>; menu rows 16 px <code>.webp</code> + <code>Eye</code>/<code>EyeOff</code> at <code>h-4 w-4</code></td><td><code>packages/editor/src/components/viewer/viewer-controls-bar.tsx</code></td></tr>
+<tr><td>Top navigation</td><td>bar <code>h-12</code>; <code>Eye</code>/<code>Share2</code> at <code>h-4 w-4</code> with <strong>visible text labels</strong> (Preview, Share)</td><td><code>apps/editor/components/editor-navbar.tsx</code></td></tr>
+<tr><td>Plugin icon renderer</td><td>three kinds — <code>url</code> (img, or CSS mask when the SVG uses <code>currentColor</code>), <code>iconify</code>, inline SVG — sized in px</td><td><code>packages/editor/src/components/ui/icon-ref.tsx</code></td></tr>
+</tbody>
+</table>
+<p>Organization, one line each:</p>
+<ul>
+<li><strong>Top bar</strong> (<code>editor-navbar.tsx</code>): project name + icon-with-label buttons (Preview, Share) — the only place labels are used.</li>
+<li><strong>Left rail</strong> (<code>sidebar/icon-rail.tsx</code>, <code>tab-bar.tsx</code>): 44 px rail of 36 px square icon buttons that switch panels (Site tree, Settings, Plugins…); panels live under <code>sidebar/panels/*</code> (<code>site-panel/*</code> has one tree-node component per node type, each carrying its own icon).</li>
+<li><strong>Inspector</strong> (<code>ui/panels/parametric-inspector.tsx</code>, <code>panel-manager.tsx</code>, <code>right-stack.tsx</code>): selection-driven property panels; icon use is sparse and small (12–16 px), mostly disclosure chevrons and inline actions.</li>
+<li><strong>Viewport</strong> (<code>components/viewer/*</code>): floating bottom-centre toolbar (<code>viewer-toolbar.tsx</code>) grouped as level mode | wall mode | shading | floorplan annotations, plus a bottom <code>viewer-controls-bar.tsx</code> (visibility toggles, quality menu) and <code>viewer-stage-switcher.tsx</code> (3D / plan / split).</li>
+</ul>
+<p>Implications for the fork: the existing language is <strong>outline monochrome at 14–16 px, in 32 px toolbar buttons and 36 px rail buttons, on a 44 px rail</strong> — i.e. Lucide is already being rendered well below its 24 px design size (effective stroke ≈ 1.33 px at 16 px). Two inconsistencies to fix rather than copy: (a) glyph sizes drift across 10/12/14/16/20/24 px with no rule, (b) node identity is carried by 101 raster <code>.webp</code> images that cannot inherit <code>currentColor</code>, while actions are vector — a SCADA fork needs monochrome, themeable equipment symbols instead.</p>
+<h2 id="6-peer-editors"><a href="#6-peer-editors">6. Peer editors</a></h2>
+<table>
+<thead>
+<tr><th>Editor</th><th>Icon language</th><th>Toolbar pattern</th><th>Evidence</th><th>Level</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>three.js editor</strong></td><td>Filled monochrome SVG, <code>viewBox=&quot;0 0 512 512&quot;</code>, single <code>path</code> fill (no stroke), rendered at <strong>16 px</strong> with <code>opacity: 0.5</code></td><td>Bottom-centre <strong>floating</strong> bar, <code>height: 32px</code>, <code>gap: 2px</code>, <code>border-radius: 6px</code>, icon-only buttons 32 px high, active = <code>.selected</code> white background; translate/rotate/scale are one explicit group</td><td>https://github.com/mrdoob/three.js/blob/dev/editor/js/Toolbar.js · https://github.com/mrdoob/three.js/blob/dev/editor/css/main.css · https://raw.githubusercontent.com/mrdoob/three.js/dev/editor/images/translate.svg</td><td>[source]</td></tr>
+<tr><td><strong>Blender</strong></td><td>Custom SVG set, <strong>white on transparent</strong>, designed on a <strong>100-unit grid</strong> in a <strong>1600×1600</strong> document, minimum feature = one grid unit; tool icons are a separate &quot;medium&quot; class used in the 3D View Toolbar</td><td>Vertical tool list down the left of the 3D View (the &quot;Toolbar&quot;), tool icons only, mode-dependent</td><td>https://developer.blender.org/docs/features/interface/icons/ · https://docs.blender.org/manual/en/latest/editors/3dview/toolbar/index.html</td><td>[doc/source]</td></tr>
+<tr><td><strong>Spline</strong></td><td>Monochrome <strong>outline</strong> glyphs, dark chrome, icon-only; glyphs read as roughly 14–16 px inside ~28 px rounded-square chips, thin stroke; accent colour reserved for selection, not for icon fill</td><td>Selection / frames / shapes / 3D shapes / text / comments / vector tools on a <strong>left rail</strong>, Play pinned at the bottom; Preview·Edit·Code tabs across the top; right inspector panel</td><td>https://docs.spline.design/basics/understanding-splines-ui · https://cdn.spline.design/_assets/docs/understanding-splines-ui-editor-v2.png</td><td>[doc] + [visual] (official screenshot read 2026-10-22)</td></tr>
+<tr><td><strong>Vectary</strong></td><td><strong>UNVERIFIED</strong> — editor is behind a login; marketing imagery only</td><td><strong>UNVERIFIED</strong>; documentation portal exists</td><td>https://help.vectary.com/</td><td>[unverified]</td></tr>
+<tr><td><strong>Womp</strong></td><td><strong>UNVERIFIED</strong> — marketing site controls use outlined monochrome SVG, but that is the website, not the editor</td><td><strong>UNVERIFIED</strong></td><td>https://womp.com/ · https://womp.com/faq/</td><td>[unverified]</td></tr>
+<tr><td><strong>Tinkercad</strong></td><td><strong>UNVERIFIED</strong> — editor is a login-gated JS app; no public UI markup</td><td><strong>UNVERIFIED</strong></td><td>https://www.tinkercad.com/</td><td>[unverified]</td></tr>
+<tr><td><strong>Bezi</strong></td><td><strong>Not applicable any more</strong> — bezi.com now sells &quot;an agentic workspace&quot; for Unity/Unreal, not a 3D design editor; there is no current editor icon language to copy</td><td>—</td><td>https://www.bezi.com/</td><td>[source] (page read 2026-10-22)</td></tr>
+</tbody>
+</table>
+<p>Pattern across what is verifiable: <strong>icon-only monochrome outline buttons in a compact 32 px strip or a vertical rail, transform tools grouped, active state carried by a background chip rather than by a filled glyph.</strong> three.js is the only one whose numbers are exact, and those numbers (32 px button, 2 px gap, 16 px glyph) match what Pascal already does.</p>
+<h2 id="7-recommendation"><a href="#7-recommendation">7. Recommendation</a></h2>
+<h3 id="71-primary-lucide-with-import-strategy"><a href="#71-primary-lucide-with-import-strategy">7.1 Primary — Lucide, with import strategy</a></h3>
+<ul>
+<li>One named import per icon, never a barrel import; <code>sideEffects: false</code> keeps the bundle at the glyphs actually referenced: <code>import { Bell, History, Gauge } from &quot;lucide-react&quot;</code>.</li>
+<li>Default size comes from one wrapper, not from per-call classes — the fork currently has 10 different sizes (§5). Create <code>components/icon.tsx</code> that renders from a <strong>4-value scale</strong> (12 / 14 / 16 / 20) and sets <code>aria-hidden</code> unless a label is given.</li>
+<li>Stroke: leave <code>strokeWidth</code> at the library default of 2 on the 24 px grid; at 16 px that renders 1.33 px. Do <strong>not</strong> set <code>strokeWidth={2}</code> on a 16 px-scaled icon expecting 2 px, and do not mix in 1.5 px sets (Iconoir) or 512-unit filled sets (Font Awesome).</li>
+<li>Icon-only buttons get <code>aria-label</code> + tooltip; the fork already has <code>Toolbar.Tooltip</code> (<code>apps/editor/components/toolbar-tooltip.tsx</code>, Radix).</li>
+</ul>
+<h3 id="72-secondary-tabler-allowed-only-for-these-glyphs"><a href="#72-secondary-tabler-allowed-only-for-these-glyphs">7.2 Secondary — Tabler, allowed only for these glyphs</a></h3>
+<p>Permitted list (each verified present in <code>@tabler/icons-react</code> 3.49.0): <code>gizmo</code>, <code>layers-union</code>, <code>layers-subtract</code>, <code>layers-intersect</code>, <code>layers-difference</code>, <code>3d-cube-sphere</code>, <code>rotate-3d</code>, <code>perspective</code>, <code>polygon</code>, <code>vector-triangle</code>, <code>arrows-move</code>, <code>arrows-maximize</code>, <code>magnet</code>. Anything outside that list means &quot;draw it&quot; or &quot;Lucide already has it&quot;.</p>
+<p>Rule: the secondary is allowed only inside the <strong>3D viewport toolbar</strong> and the <strong>mesh-edit mode switcher</strong>. It is not allowed in the SCADA chrome (alarms, trends, asset tree, tables) — mixing families there is what makes an app look assembled instead of designed.</p>
+<h3 id="73-must-be-custom-svg-20-glyphs"><a href="#73-must-be-custom-svg-20-glyphs">7.3 Must-be-custom SVG (20 glyphs)</a></h3>
+<p>Drawn on the same 24 px box: <code>fill=&quot;none&quot;</code>, <code>stroke=&quot;currentColor&quot;</code>, <code>stroke-width=&quot;2&quot;</code>, <code>stroke-linecap=&quot;round&quot;</code>, 1 px padding — Lucide's own rules (https://lucide.dev/contribute/icons/design-principles).</p>
+<p><strong>A. Equipment / P&amp;ID (8) — no library has a defensible symbol</strong></p>
+<table>
+<thead>
+<tr><th>Glyph</th><th>Why custom</th></tr>
+</thead>
+<tbody>
+<tr><td><code>equip-valve-gate</code></td><td>Lucide's <code>faucet</code> and Material's <code>valve</code> are UI symbols, not an ISA-style gate valve on a line</td></tr>
+<tr><td><code>equip-pump-centrifugal</code></td><td>No set has a pump; Material's <code>water-pump</code> is a plumbing glyph</td></tr>
+<tr><td><code>equip-motor</code></td><td>Absent everywhere (Lucide's <code>*-cog</code> icons are UI affordances)</td></tr>
+<tr><td><code>equip-tank-vessel</code></td><td><code>barrel</code> / <code>container</code> / <code>oil-barrel</code> are storage objects, not a level-bearing vessel</td></tr>
+<tr><td><code>equip-transmitter-level</code></td><td>Process-instrument bubble on a line</td></tr>
+<tr><td><code>equip-transmitter-flow</code></td><td>Process-instrument bubble on a line</td></tr>
+<tr><td><code>equip-transmitter-pressure</code></td><td>Process-instrument bubble on a line</td></tr>
+<tr><td><code>equip-sensor-node</code></td><td>Field-device dot with a signal stem (distinct from <code>sensors</code>, a Wi-Fi-like glyph)</td></tr>
+</tbody>
+</table>
+<p><strong>B. Alarm, tag and trend (5)</strong></p>
+<table>
+<thead>
+<tr><th>Glyph</th><th>Why custom</th></tr>
+</thead>
+<tbody>
+<tr><td><code>alarm-severity-critical</code></td><td>Severity must be <strong>shape + colour</strong> coded (WCAG 1.4.1); <code>triangle-alert</code> is one generic warning</td></tr>
+<tr><td><code>alarm-severity-warning</code></td><td>Same triad, second level</td></tr>
+<tr><td><code>alarm-acknowledged</code></td><td>&quot;Seen by an operator&quot; is not in any set</td></tr>
+<tr><td><code>tag-binding</code></td><td>The product's core object: a tag pin bound to geometry; <code>tag</code> is a retail price tag</td></tr>
+<tr><td><code>trend-interval</code></td><td>Time-window bracket (1 m / 5 m / 1 h / 1 d); may be rendered as a text segmented control instead, in which case the glyph is optional</td></tr>
+</tbody>
+</table>
+<p><strong>C. 3D viewport (7)</strong></p>
+<table>
+<thead>
+<tr><th>Glyph</th><th>Why custom</th></tr>
+</thead>
+<tbody>
+<tr><td><code>gizmo-translate</code>, <code>gizmo-rotate</code>, <code>gizmo-scale</code></td><td>Tabler's <code>gizmo</code> is a single generic glyph; a real editor needs three distinguishable transform modes</td></tr>
+<tr><td><code>op-extrude</code></td><td>Only Iconoir has <code>extrude</code>, at 1.5 px stroke — it would be the one light glyph in the set</td></tr>
+<tr><td><code>uv-unwrap</code></td><td>Only Hugeicons has <code>uv-01</code>…<code>03</code>; the concept needs a flattened net, not a grid</td></tr>
+<tr><td><code>wireframe</code></td><td>Nothing across all 15 sets</td></tr>
+<tr><td><code>select-vertex-edge-face</code></td><td>The selection triad (point / segment / polygon) is absent in every set</td></tr>
+</tbody>
+</table>
+<h3 id="74-rejected-and-why"><a href="#74-rejected-and-why">7.4 Rejected, and why</a></h3>
+<ul>
+<li><strong>Material Symbols as primary</strong> — the best industrial <em>vocabulary</em> (14/15 in §3, against Lucide's 12/15) but the wrong <em>tool</em>: 16,442 glyphs behind a 7.9 MB variable font, no <code>sideEffects: false</code>, and filled-path geometry on a 48 px viewBox that fights a 2 px stroke set. Its equipment glyphs are also generic Google symbols, not P&amp;ID symbols, so they do not remove the custom sheet — they add a second visual language instead.</li>
+<li><strong>Iconoir as secondary</strong> — has <code>extrude</code>, <code>select-edge-3d</code>, <code>box-3d-point</code>, but <code>stroke-width=&quot;1.5&quot;</code> (https://cdn.jsdelivr.net/npm/iconoir@latest/icons/regular/extrude.svg) against the fork's 2 px.</li>
+<li><strong>Font Awesome / Solar / Boxicons</strong> — CC-BY-4.0 attribution obligations in a shipped product.</li>
+<li><strong>Icon fonts of any kind</strong> — no per-glyph tree-shaking, no <code>currentColor</code> control at the component level, poor rendering at 14 px, and screen-reader noise.</li>
+<li><strong><code>@iconify/react</code> for the app's own chrome</strong> — fine as the fork's plugin escape hatch (<code>icon-ref.tsx</code>), not as the app's icon source: it resolves icons at runtime and defeats static analysis.</li>
+</ul>
+<h2 id="8-spec"><a href="#8-spec">8. Spec</a></h2>
+<table>
+<thead>
+<tr><th>Property</th><th>Value</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td>Icon box</td><td><strong>24 × 24 px</strong> <code>viewBox</code>, glyph centred, 1 px padding</td><td>Lucide: &quot;Icons must be designed on a 24 × 24-pixel canvas&quot; — https://lucide.dev/contribute/icons/design-principles · Tabler: &quot;24×24 canvas, a 2 px centered stroke&quot; — https://docs.tabler.io/icons/design-guide</td></tr>
+<tr><td>Stroke</td><td><strong>2 px at 24</strong>, round cap and join; effective 1.33 px when rendered at 16 px</td><td>Same two design guides; verified in <code>icons/move-3d.svg</code> and <code>icons/outline/gizmo.svg</code></td></tr>
+<tr><td>Glyph size scale</td><td><strong>12</strong> (dense tables/inline) · <strong>14</strong> (default rail/menu) · <strong>16</strong> (default toolbar) · <strong>20</strong> (primary viewport tools) — nothing else</td><td>Fork's existing distribution: 14 px × 187, 16 px × 176 (§5)</td></tr>
+<tr><td>Button box (desktop)</td><td><strong>32 × 32 px</strong> in a 32 px-tall toolbar; <strong>36 × 36 px</strong> in the 44 px rail</td><td>three.js <code>#toolbar</code> height 32px + 32px buttons — https://github.com/mrdoob/three.js/blob/dev/editor/css/main.css · Pascal <code>viewer-toolbar.tsx</code> (<code>h-8</code>, <code>w-8</code>), <code>icon-rail.tsx</code> (<code>w-11</code>, <code>h-9 w-9</code>)</td></tr>
+<tr><td>Hit target</td><td><strong>≥ 24 × 24 CSS px</strong> (AA); <strong>44 × 44</strong> for touch surfaces</td><td>WCAG 2.2 SC 2.5.8: &quot;at least 24 by 24 CSS pixels&quot; — https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum · SC 2.5.5 (AAA) 44 × 44 — https://www.w3.org/WAI/WCAG22/Understanding/target-size-enhanced · Apple: &quot;at least 44 points x 44 points&quot; — https://developer.apple.com/design/tips/ · Material: &quot;at least 48 x 48 dp&quot;, 8 dp apart — https://m1.material.io/layout/metrics-keylines.html · Carbon: &quot;44px or larger&quot; — https://www.carbondesignsystem.com/building-blocks/foundations/icons/guidelines</td></tr>
+<tr><td>Gap</td><td><strong>2 px inside a tool group</strong>, <strong>6–8 px between groups</strong>, optional 1 px divider</td><td>three.js <code>gap: 2px</code>; Material 8 dp spacing</td></tr>
+<tr><td>Active state</td><td><strong>Background chip + 2 px accent bar</strong> (rail) + <code>aria-pressed</code>; the icon stays monochrome. Never colour-only</td><td>three.js <code>.Button.selected { background-color: #fff }</code>; WCAG 1.4.1 (use of colour)</td></tr>
+<tr><td>Hover</td><td>8 % white overlay, icon at full <code>text-foreground</code> (fork already ships <code>hover:bg-white/8</code>)</td><td><code>viewer-toolbar.tsx</code></td></tr>
+<tr><td>Disabled</td><td>40 % opacity, no chip, <code>aria-disabled</code>, tooltip explains why</td><td>—</td></tr>
+<tr><td>Labels</td><td>Icon-only in the toolbar and rail, with tooltip + <code>aria-label</code>; <strong>icon + text</strong> in the top bar and for destructive/ambiguous actions</td><td>Pascal <code>editor-navbar.tsx</code>; Apple HIG toolbars guidance</td></tr>
+<tr><td>Theme</td><td><code>currentColor</code> only; no raster glyphs where a themed stroke is needed</td><td>Fork's 101 <code>.webp</code> icons cannot inherit colour (§5)</td></tr>
+</tbody>
+</table>
+<p>Tool-group layout for the two surfaces:</p>
+<ul>
+<li><strong>Viewport toolbar (3D, floating bottom-centre, 32 px tall):</strong>
+<code>[ gizmo-translate | gizmo-rotate | gizmo-scale ] · [ ortho/persp · wireframe · section ] · [ snapping ] · [ display/quality ]</code>
+Transform trio first and visually contiguous (three.js groups exactly these three; Spline and Blender also front-load selection and transform).</li>
+<li><strong>SCADA app chrome (left rail 44 px, 36 px buttons):</strong>
+<code>[ asset tree ] [ alarms ] [ trends ] [ history ] [ tags ] · [ settings ] [ plugins ]</code>
+Severity counts render as badges on <code>alarms</code>, not as icons of their own; the rail stays icon-only with tooltips.</li>
+</ul>
+<h2 id="9-paid-sets"><a href="#9-paid-sets">9. Paid sets</a></h2>
+<table>
+<thead>
+<tr><th>Set</th><th>Price seen (2026-10-22)</th><th>May a product ship it?</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Streamline</strong></td><td>$9 / $19 / $29 per month tiers on https://home.streamlinehq.com/pricing</td><td><strong>Not on standard plans.</strong> The pricing copy scopes standard use to personal/commercial <em>projects</em> with an asset allowance; embedding assets in an app &quot;and extend the license to your end customers&quot; is a <strong>custom/enterprise</strong> licence (Contact Sales). Do not assume product shipping.</td></tr>
+<tr><td><strong>Nucleo</strong></td><td>$69 / $99 / $149 / $299 / $405 tiers listed on https://nucleoapp.com/pricing</td><td><strong>UNVERIFIED</strong> — the pricing page does not state redistribution terms; the licence clause must be read before shipping.</td></tr>
+<tr><td><strong>Icons8</strong></td><td><strong>UNVERIFIED</strong> — https://icons8.com/pricing answered <strong>HTTP 403</strong> to every automated request from this session, so no price is quoted here</td><td><strong>UNVERIFIED</strong> — nothing read, nothing claimed. Re-check the Universal License Agreement in a browser before relying on it.</td></tr>
+</tbody>
+</table>
+<p>None of them is needed for this recommendation; they are listed because the brief asks for prices and shipability.</p>
+<h2 id="10-unverified-and-limits"><a href="#10-unverified-and-limits">10. Unverified and limits</a></h2>
+<ul>
+<li><strong>Womp, Vectary, Tinkercad editor icon language</strong> — all three editors are login-gated; only marketing pages were reachable. The peer table marks them <code>[unverified]</code> rather than guessing from website chrome.</li>
+<li><strong>Bezi</strong> — the product pivoted; there is no current 3D editor UI to compare (https://www.bezi.com/).</li>
+<li><strong>Nucleo redistribution clause</strong> — pricing page read, licence clause not quoted (§9).</li>
+<li><strong>Icons8</strong> — https://icons8.com/pricing returned <strong>HTTP 403</strong> to automated clients during this pass (an earlier attempt in the same session returned 200 with a price of $19.99/month, which is <em>not</em> used as a claim here because it was not reproducible). A browser may still open the page; re-read the licence there.</li>
+<li><strong>Iconify HTTP API</strong> returned 429 during this pass; all counts therefore come from the same dataset served as npm packages at <code>cdn.jsdelivr.net/npm/@iconify-json/*</code>, which is a citable, reproducible source.</li>
+<li><strong>Glyph counts</strong> are dataset entries, not &quot;distinct concepts&quot;: Phosphor's 9,161 = 1,248 icons × 6 weights; Material Symbols' 16,442 includes outline/rounded/sharp variants.</li>
+<li><strong>Spline glyph pixel size</strong> is a visual reading of an official screenshot, not a measurement of Spline's CSS.</li>
+</ul>
+<h2 id="appendix-coverage-probe-keywords"><a href="#appendix-coverage-probe-keywords">Appendix — coverage probe keywords</a></h2>
+<p>Applied to each set's lower-cased icon-name array with segment-boundary matching (<code>name === k</code>, <code>k-</code> prefix, <code>-k</code> suffix, <code>-k-</code> infix), brand/logo prefixes excluded, then hand-audited.</p>
+<pre><code>industrial: valve=[valve,faucet,plumbing,tap] pump=[pump,fuel] motor=[motor,engine,turbine,gear,cog,propeller]
+  tank=[tank,barrel,drum,container,vessel] sensor=[sensor,radar,thermometer,humidity,gauge,speedometer,signal]
+  tag=[tag,label,barcode,qr-code,bookmark] alarm=[alarm,alert,bell,siren,warning,octagon,fire]
+  severity=[alert-circle,alert-triangle,alert-octagon,info,circle-alert,exclamation] trend=[trending,chart,graph,activity,analytics,pulse]
+  history=[history,clock,archive,rewind,rotate-ccw] status=[circle-check,circle-x,power,circle-dot,shield]
+  deviceTree=[network,server,cpu,hard-drive,router,list-tree,git-branch,hierarchy,sitemap] flow=[pipe,droplet,droplets,waves,flow,gauge]
+  energy=[zap,battery,plug,bolt,power] plant=[factory,building,warehouse,industry]
+3d: move=[move,open-with,drag] rotate=[rotate,rotate-3d,rotate-cw,rotate-ccw,orbit,refresh] scale=[scale,resize,maximize,expand,arrows-out,fullscreen]
+  gizmo=[gizmo] mesh=[mesh,grid,cube,box,boxes,polygon,3d] vertex=[vertex,point,node,dot,circle-dot,circle-small]
+  edge=[edge,line,stroke] face=[face,polygon,square] extrude=[extrude] boolean=[boolean,union,subtract,intersect,difference,combine,exclude,merge]
+  light=[light,bulb,lamp,sun,flashlight] camera=[camera,video,aperture] material=[material,palette,swatch,paint,brush,texture]
+  uv=[uv,unwrap,atlas] render=[render,play,clapperboard,monitor] wireframe=[wireframe]
+  orthographic=[orthographic,projection,perspective,isometric] snapping=[magnet,snap]
+</code></pre>
+</body></html>
