@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TwinOps 디자인 덱</title>
+<style>
+  :root{
+    --canvas:#0c0c0d; --s2:#1c1c1f; --line:#2c2c2c;
+    --text:#e7eaed; --dim:#8a929b; --faint:#6b7280; --accent:#3b82f6;
+    --mono:ui-monospace,"Cascadia Mono",Consolas,monospace;
+    --sans:"Noto Sans KR","Inter",-apple-system,"Segoe UI",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:var(--canvas);color:var(--text);font-family:var(--sans);overscroll-behavior:none}
+  .deck{display:flex;height:100dvh;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .deck::-webkit-scrollbar{display:none}
+  .slide{flex:0 0 100vw;height:100dvh;scroll-snap-align:center;display:flex;flex-direction:column;padding:16px 14px 20px;gap:10px}
+  .top{display:flex;align-items:baseline;gap:8px}
+  .top h2{font-size:16px;font-weight:600;letter-spacing:-.01em}
+  .top .n{font:10px var(--mono);color:var(--faint);letter-spacing:.08em}
+  .top .badge{margin-left:auto;font:10px var(--mono);color:var(--dim);border:1px solid var(--line);border-radius:4px;padding:2px 6px}
+  .shot{flex:1;min-height:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--s2);display:flex;align-items:center;justify-content:center}
+  .shot img{width:100%;height:100%;object-fit:contain;display:block}
+  .cap{font-size:12px;color:var(--dim);line-height:1.55}
+  .cap b{color:var(--text);font-weight:500}
+  .pager{position:fixed;bottom:8px;left:0;right:0;display:flex;justify-content:center;gap:6px;pointer-events:none}
+  .pager i{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.22)}
+  .pager i.on{background:var(--accent)}
+  .hint{position:fixed;top:8px;right:12px;font:10px var(--mono);color:var(--faint)}
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+  <section class="slide">
+    <div class="top"><span class="n">01</span><h2>에디터 메인</h2><span class="badge">D · dark console</span></div>
+    <div class="shot"><img src="ed-evolved.png" alt="editor main"></div>
+    <div class="cap"><b>파스칼 구조 유지</b> — 56px 레일, 사이트 트리, 뷰바(2D/3D/태그/플러그인), 떠 있는 툴, 우측 인스펙터(바인딩·변환·속성).</div>
+  </section>
+  <section class="slide">
+    <div class="top"><span class="n">02</span><h2>프로젝트 리스트</h2><span class="badge">editor home</span></div>
+    <div class="shot"><img src="ed-project.png" alt="project list"></div>
+    <div class="cap"><b>카드 + KPI 스트립</b> — 썸네일·씬 수·알람 상태, 하단에 최근 씬과 작업 공간 요약.</div>
+  </section>
+  <section class="slide">
+    <div class="top"><span class="n">03</span><h2>씬 리스트</h2><span class="badge">project > scens</span></div>
+    <div class="shot"><img src="ed-scenes.png" alt="scene list"></div>
+    <div class="cap"><b>영역별 그룹</b> — 상태 점·알람 수·마지막 편집, 우측에 선택 씬 미리보기와 게시 액션.</div>
+  </section>
+  <section class="slide">
+    <div class="top"><span class="n">04</span><h2>태그 바인딩</h2><span class="badge">binding</span></div>
+    <div class="shot"><img src="ed-tagbinding.png" alt="tag binding"></div>
+    <div class="cap"><b>바인딩 상태</b> — 연결/지연/미바인딩을 행 단위로, 우측에 라이브 미리보기와 자동 매핑.</div>
+  </section>
+  <section class="slide">
+    <div class="top"><span class="n">05</span><h2>런타임 개요</h2><span class="badge">operator</span></div>
+    <div class="shot"><img src="rt-overview.png" alt="runtime overview"></div>
+    <div class="cap"><b>뷰포트 + KPI + 알람 요약 + 설비 상태</b>. 숫자는 크게, 상태는 점·도형으로.</div>
+  </section>
+  <section class="slide">
+    <div class="top"><span class="n">06</span><h2>알람 콘솔</h2><span class="badge">alarms</span></div>
+    <div class="shot"><img src="rt-alarms.png" alt="alarm console"></div>
+    <div class="cap"><b>심각도 ◆▲● + 텍스트</b>, 미확인/확인 상태, 우측 타임라인·관련 태그·조치.</div>
+  </section>
+  <section class="slide">
+    <div class="top"><span class="n">07</span><h2>모션 스펙</h2><span class="badge">live</span></div>
+    <div class="shot"><img src="motion-spec.png" alt="motion spec"></div>
+    <div class="cap"><b>애니메이션은 라이브로 봐야 정확해</b> — motion.html에서 6개 모션이 6초 루프로 재생돼.</div>
+  </section>
+</div>
+<div class="pager" id="pager"></div>
+<div class="hint">swipe →</div>
+<script>
+  const deck = document.getElementById('deck');
+  const slides = [...deck.children];
+  const pager = document.getElementById('pager');
+  slides.forEach((_, i) => { const d = document.createElement('i'); if (i === 0) d.className = 'on'; pager.appendChild(d); });
+  const dots = [...pager.children];
+  deck.addEventListener('scroll', () => {
+    const i = Math.round(deck.scrollLeft / window.innerWidth);
+    dots.forEach((d, j) => d.className = j === i ? 'on' : '');
+  }, { passive: true });
+</script>
+</body>
+</html>
