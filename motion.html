@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TwinOps 모션 스펙 — affectUI 실측 기반</title>
+<style>
+  :root{
+    --canvas:#0c0c0d; --s1:#121213; --s2:#1c1c1f; --s3:#1f1f21;
+    --line:#2c2c2c; --soft:#242426;
+    --text:#e7eaed; --dim:#8a929b; --faint:#6b7280;
+    --accent:#3b82f6; --ok:#34d399; --warn:#f5a524; --danger:#f2564d; --info:#7bb0ff;
+    --mono:ui-monospace,"Cascadia Mono",Consolas,monospace;
+    --sans:"Noto Sans KR","Inter",-apple-system,"Segoe UI",system-ui,sans-serif;
+    --ease-struct:cubic-bezier(.22,1,.36,1);
+    --ease-pop:cubic-bezier(.34,1.56,.64,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--canvas);color:var(--text);font:14px/1.65 var(--sans);padding:40px 32px 64px;max-width:1180px;margin:0 auto}
+  h1{font-size:24px;font-weight:600;letter-spacing:-.02em}
+  .sub{color:var(--dim);font-size:12.5px;margin-top:4px}
+  .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:24px}
+  .card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,0) 45%),var(--s2);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:inset 0 1px 0 rgba(255,255,255,.045)}
+  .card h3{font-size:13px;font-weight:600}
+  .card .tag{font:10px var(--mono);color:var(--faint);letter-spacing:.07em;margin-top:2px}
+  .stage{height:172px;margin:12px 0 10px;background:var(--canvas);border:1px solid var(--soft);border-radius:10px;overflow:hidden;position:relative}
+  .spec{font:10.5px/1.7 var(--mono);color:var(--dim)}
+  .spec b{color:var(--text);font-weight:500}
+
+  /* 1. 단어 블러 인 */
+  .ai{padding:12px}
+  .ai .bubble{background:var(--s3);border:1px solid var(--line);border-radius:9px;padding:10px 12px;animation:cardIn 6s var(--ease-struct) infinite}
+  .ai .w{display:inline-block;opacity:0;filter:blur(3px);animation:wordIn 6s var(--ease-struct) infinite}
+  .ai .w:nth-child(2){animation-delay:.1s}
+  .ai .w:nth-child(3){animation-delay:.2s}
+  .ai .w:nth-child(4){animation-delay:.3s}
+  .ai .cite{display:inline-block;margin-top:9px;font:10px var(--mono);color:#a9c7f8;border:1px solid rgba(59,130,246,.4);background:rgba(59,130,246,.12);border-radius:4px;padding:2px 6px;opacity:0;animation:chipIn 6s var(--ease-pop) .5s infinite}
+  @keyframes cardIn{0%{opacity:0;transform:translateY(4px) scale(.97)}8%{opacity:1;transform:none}92%{opacity:1;transform:none}100%{opacity:0}}
+  @keyframes wordIn{0%{opacity:0;filter:blur(3px)}9%{opacity:1;filter:none}92%{opacity:1;filter:none}100%{opacity:0;filter:blur(3px)}}
+  @keyframes chipIn{0%{opacity:0;transform:scale(.8)}10%{opacity:1;transform:none}92%{opacity:1;transform:none}100%{opacity:0}}
+
+  /* 2. KPI 값 롤 */
+  .kpi{padding:14px}
+  .kpi .lab{font:10px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+  .kpi .v{display:flex;align-items:baseline;gap:6px;margin-top:4px;overflow:hidden;height:38px}
+  .kpi .num{font-size:30px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;animation:roll 6s var(--ease-struct) infinite}
+  .kpi .u{font-size:12px;color:var(--dim)}
+  .kpi .d{margin-top:2px;font:10.5px var(--mono);color:var(--ok)}
+  @keyframes roll{0%{transform:translateY(70%);opacity:0}10%{transform:none;opacity:1}92%{transform:none;opacity:1}100%{transform:translateY(-40%);opacity:0}}
+
+  /* 3. 세그먼트 미터 */
+  .meter{padding:14px}
+  .meter .bar{display:flex;gap:2px;height:8px;margin-top:10px}
+  .meter .seg{background:rgba(59,130,246,.85);border-radius:1px;transform-origin:left;animation:seg 6s var(--ease-struct) infinite}
+  .meter .seg:nth-child(1){width:26%;animation-delay:.00s}
+  .meter .seg:nth-child(2){width:18%;animation-delay:.06s}
+  .meter .seg:nth-child(3){width:14%;animation-delay:.12s}
+  .meter .seg:nth-child(4){width:10%;animation-delay:.18s}
+  .meter .seg.rest{background:rgba(255,255,255,.08);width:32%;animation-delay:.24s}
+  .meter .rows{margin-top:12px;display:flex;flex-direction:column;gap:6px}
+  .meter .row{display:grid;grid-template-columns:10px 1fr auto auto;gap:8px;align-items:center;font-size:11.5px;opacity:0;animation:rowIn 6s var(--ease-struct) infinite}
+  .meter .row:nth-child(1){animation-delay:.2s}.meter .row:nth-child(2){animation-delay:.28s}.meter .row:nth-child(3){animation-delay:.36s}
+  .meter .sw{width:7px;height:7px;border-radius:1px;background:var(--accent)}
+  .meter .row span{color:var(--dim)}
+  .meter .row b{font:11px var(--mono);font-weight:500}
+  @keyframes seg{0%{transform:scaleX(0)}12%{transform:scaleX(1)}92%{transform:scaleX(1)}100%{transform:scaleX(0)}}
+  @keyframes rowIn{0%{opacity:0;transform:translateY(3px)}12%{opacity:1;transform:none}92%{opacity:1}100%{opacity:0}}
+
+  /* 4. 레인 슬랩 */
+  .lane{padding:12px}
+  .lane .lrow{display:grid;grid-template-columns:86px 1fr;gap:8px;align-items:center;margin-bottom:8px;font-size:11px}
+  .lane .who{color:var(--dim)}
+  .lane .track{position:relative;height:22px}
+  .slab{position:absolute;top:0;height:22px;border-radius:5px;display:flex;align-items:center;padding:0 7px;font-size:10.5px;white-space:nowrap;animation:slab 6s var(--ease-struct) infinite}
+  .slab.a{left:4%;width:38%;background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--dim)}
+  .slab.b{left:46%;width:44%;background:rgba(59,130,246,.20);border:1px solid rgba(59,130,246,.45);color:#cfe0fb;animation-delay:.1s}
+  .slab.c{left:30%;width:34%;background:rgba(242,86,77,.14);border:1px solid rgba(242,86,77,.35);color:#ff8a80;animation-delay:.2s}
+  @keyframes slab{0%{opacity:0;transform:translateY(4px)}10%{opacity:1;transform:none}92%{opacity:1}100%{opacity:0}}
+
+  /* 5. 상태 펄스 */
+  .pulse{display:grid;place-items:center;height:100%}
+  .pulse .ring{position:relative;display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--text)}
+  .pulse .d{width:8px;height:8px;border-radius:50%;background:var(--warn);box-shadow:0 0 0 0 rgba(245,165,36,.5);animation:beat 2.4s ease-in-out infinite}
+  @keyframes beat{0%,100%{box-shadow:0 0 0 0 rgba(245,165,36,.45);opacity:.85}50%{box-shadow:0 0 0 7px rgba(245,165,36,0);opacity:1}}
+
+  /* 6. 모달 진입 */
+  .modal-stage{display:grid;place-items:center;height:100%;background:rgba(0,0,0,.28)}
+  .modal{width:74%;background:var(--s2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:0 24px 60px rgba(0,0,0,.55);animation:modalIn 6s var(--ease-struct) infinite}
+  .modal h4{font-size:13px}
+  .modal p{font-size:11.5px;color:var(--dim);margin-top:4px}
+  .modal .acts{display:flex;gap:6px;justify-content:flex-end;margin-top:12px}
+  .modal .b{font-size:11px;padding:5px 10px;border-radius:6px;border:1px solid var(--line);color:var(--text)}
+  .modal .b.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+  @keyframes modalIn{0%{opacity:0;transform:translateY(6px) scale(.96)}9%{opacity:1;transform:none}92%{opacity:1;transform:none}100%{opacity:0;transform:translateY(6px) scale(.96)}}
+</style>
+</head>
+<body>
+  <h1>TwinOps 모션 스펙</h1>
+  <div class="sub">affectUI 프리뷰에서 실측한 키프레임을 우리 컴포넌트에 이식 — 구조 곡선 <b>cubic-bezier(.22,1,.36,1)</b>, 팝 <b>cubic-bezier(.34,1.56,.64,1)</b>. 6초 루프로 재생.</div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>AI 답변 — 단어 블러 인</h3><div class="tag">ui-ansc-word · ui-ansc-card · ui-ansc-chip</div>
+      <div class="stage">
+        <div class="ai">
+          <div class="bubble">
+            <span class="w">냉각수</span> <span class="w">유량이</span> <span class="w">설정값</span> <span class="w">아래입니다.</span>
+            <div><span class="cite">FT-3301 · 1.2 m³/h</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="spec">카드 <b>translateY 4 · scale .97</b> / 단어 <b>blur 3 → 0</b> / 칩 <b>scale .8</b></div>
+    </div>
+
+    <div class="card">
+      <h3>KPI — 숫자 롤</h3><div class="tag">ui-anc-roll (파생)</div>
+      <div class="stage">
+        <div class="kpi">
+          <div class="lab">가동률</div>
+          <div class="v"><span class="num">94.2</span><span class="u">%</span></div>
+          <div class="d">+1.2 pt · 24h</div>
+        </div>
+      </div>
+      <div class="spec"><b>translateY 70% → 0</b> + opacity, tabular-nums 유지</div>
+    </div>
+
+    <div class="card">
+      <h3>사용량 미터 — 세그먼트 성장</h3><div class="tag">ui-umc-grow · ui-umc-rise</div>
+      <div class="stage">
+        <div class="meter">
+          <div class="bar"><i class="seg"></i><i class="seg"></i><i class="seg"></i><i class="seg"></i><i class="seg rest"></i></div>
+          <div class="rows">
+            <div class="row"><i class="sw"></i><span>원료 A</span><b>3,980 L</b><b>49%</b></div>
+            <div class="row"><i class="sw" style="background:#7bb0ff"></i><span>원료 B</span><b>2,640 L</b><b>32%</b></div>
+            <div class="row"><i class="sw" style="background:#f5a524"></i><span>재순환</span><b>1,540 L</b><b>19%</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="spec"><b>scaleX 0 → 1</b> origin left, 세그먼트 60ms 스태거, 행은 3px 페이드</div>
+    </div>
+
+    <div class="card">
+      <h3>레인 — 슬랩 등장</h3><div class="tag">ui-twc-row · ui-alc-flow</div>
+      <div class="stage">
+        <div class="lane">
+          <div class="lrow"><span class="who">L-303 순환</span><div class="track"><i class="slab a">P-201 운전</i></div></div>
+          <div class="lrow"><span class="who">L-303 배출</span><div class="track"><i class="slab b">배출 밸브 조정</i></div></div>
+          <div class="lrow"><span class="who">L-304 세정</span><div class="track"><i class="slab c">CIP 알람</i></div></div>
+        </div>
+      </div>
+      <div class="spec"><b>translateY 4px</b> + opacity, 슬랩별 100ms 스태거, 흐름은 닷 오프셋 루프</div>
+    </div>
+
+    <div class="card">
+      <h3>주의 상태 — 펄스</h3><div class="tag">ui-alc-pulse</div>
+      <div class="stage">
+        <div class="pulse"><span class="ring"><i class="d"></i>확인 필요 · P-201 과열</span></div>
+      </div>
+      <div class="spec"><b>opacity .55 ↔ 1</b> + 외곽 링 0 → 7px 소멸, 2.4s ease-in-out</div>
+    </div>
+
+    <div class="card">
+      <h3>모달 — 진입</h3><div class="tag">modal · ui-umc-in 파생</div>
+      <div class="stage">
+        <div class="modal-stage">
+          <div class="modal">
+            <h4>L-303 씬을 게시할까요?</h4>
+            <p>미확인 변경 3건이 런타임에 반영됩니다.</p>
+            <div class="acts"><span class="b">취소</span><span class="b pri">게시</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="spec"><b>translateY 6px · scale .96</b> + 배경 딤, 180ms</div>
+    </div>
+  </div>
+</body>
+</html>
