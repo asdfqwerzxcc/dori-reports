@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>usd web viewer — esm.sh</title>
+<style>html,body{margin:0;height:100%;background:#0c0c0d;color:#e7eaed;font:13px "Noto Sans KR",system-ui}#v{position:absolute;inset:0}.h{position:absolute;left:14px;top:12px;font:11px ui-monospace,monospace;color:#8a929b;z-index:2}</style>
+</head>
+<body>
+<div id="v"></div><div class="h">USD web viewer · Robotiq 2F-85</div>
+<script type="module">
+  window.addEventListener("error", (e) => document.body.dataset.err = String(e.message));
+  import { createViewer } from "https://esm.sh/@huggingface/usd-web-viewer@0.1.1?external=three";
+  const viewer = createViewer(document.getElementById("v"), { background: 0x0c0c0d });
+  viewer.load(
+    "https://huggingface.co/datasets/Robotiq-Official/simready-assets/resolve/main/Robotiq_2F_85/simready_usd/Robotiq_2F_85.usda",
+    { textures: "preview", wasmUrl: "./wasm/usd_wasm_bg.wasm", workerUrl: "./esm/worker.js" }
+  ).then(() => document.body.dataset.ready = "1")
+   .catch((e) => document.body.dataset.err = String(e));
+</script>
+</body>
+</html>
