@@ -27928,6 +27928,7 @@ function frameBox(camera, controls, box) {
   controls?.update();
 }
 // demo/main.ts
+document.body.setAttribute("data-boot", "1");
 var el = document.getElementById("viewer");
 var viewer = createViewer(el, { background: 789517 });
 var asset = "https://huggingface.co/datasets/Robotiq-Official/simready-assets/resolve/main/Robotiq_2F_85/simready_usd/Robotiq_2F_85.usda";
