@@ -13,6 +13,10 @@
 <body>
 <div id="viewer"></div>
 <div class="hud"><b>USD web viewer</b> · Robotiq 2F-85 (SimReady)</div>
-<script type="module" src="/main.js"></script>
+<script>
+  window.addEventListener("error", (e) => { document.body.setAttribute("data-error", String(e.message || e.error)); });
+  window.addEventListener("unhandledrejection", (e) => { document.body.setAttribute("data-error", "rejection:" + String(e.reason)); });
+</script>
+<script type="module" src="./main.js"></script>
 </body>
 </html>

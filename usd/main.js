@@ -27933,14 +27933,14 @@ var viewer = createViewer(el, { background: 789517 });
 var asset = "https://huggingface.co/datasets/Robotiq-Official/simready-assets/resolve/main/Robotiq_2F_85/simready_usd/Robotiq_2F_85.usda";
 var opts = {
   textures: "preview",
-  wasmUrl: "/wasm/usd_wasm_bg.wasm",
-  workerUrl: "/esm/worker.js",
+  wasmUrl: "./wasm/usd_wasm_bg.wasm",
+  workerUrl: "./esm/worker.js",
   onProgress: (_s, f) => console.log("progress", f.toFixed(2))
 };
 viewer.load(asset, opts).then(({ info }) => {
-  console.log("loaded", JSON.stringify(info?.warnings ?? []));
   document.body.setAttribute("data-ready", "1");
+  console.log("loaded", JSON.stringify(info?.warnings ?? []));
 }).catch((e) => {
-  console.error("LOAD_FAILED", String(e));
   document.body.setAttribute("data-error", String(e));
+  console.error("LOAD_FAILED", String(e));
 });
